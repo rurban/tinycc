@@ -2378,7 +2378,13 @@ static void gen_opic(int op)
         case '&': l1 &= l2; break;
         case '^': l1 ^= l2; break;
         case '|': l1 |= l2; break;
-        case '*': l1 *= l2; break;
+        case '*':
+            if (c2 && (l2 & (l2 - 1)) == 0 && (l1 << __builtin_ctzll(l2)) <= 0x7fffffff) {
+                l1 <<= __builtin_ctzll(l2);
+            } else {
+                l1 *= l2;
+            }
+            break;
 
         case TOK_PDIV:
         case '/':
